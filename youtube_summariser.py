@@ -4,7 +4,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 #setup client to send message to open ai 
 client=OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="")
+    api_key=st.secrets["OPENROUTER_API_KEY"])
 
 def extract_id(input):
     url=str.split(input,"v=")
