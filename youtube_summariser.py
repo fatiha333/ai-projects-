@@ -24,6 +24,7 @@ def yt_api(id):
     text=""
     for i in transcript:
         text+=" "+i.text
+        st.session_state["transcript"]=text   
     return text
 # now send query and ask it to summarise this 
 def aisummary(query):
@@ -32,9 +33,17 @@ def aisummary(query):
         messages=[{"role":"user","content":(f"summarise the following content {query}")}]
     )
     return responses.choices[0].message.content
+def ai_ask(query,store):
+    responses=client.chat.completions.create(
+        model="nex-agi/nex-n2-pro:free",
+        messages=[{"role":"user","content":(f"based on the transcript {store} answer the following question {query}")}]
+    )
+    return responses.choices[0].message.content
 st.title("youtube video summariser")
 input=st.text_area("enter the video url")
 button1=st.button("submit")
+input1=st.text_area("enter your question")
+button2=st.button("Ask")
 try:
   if button1:
    a=extract_id(input)
@@ -43,8 +52,12 @@ try:
 
    st.markdown( f"## the summary of the respective youtube video is :\n")
    st.write(c)
+  if button2:
+      if "transcript" in st.session_state:
+        c=ai_ask(input1,st.session_state["transcript"])
+        st.write(c)
+      else:
+       st.write("please  summarise first ")
 except Exception as e:
  st.error(f" something went wrong {e}")
-
-
 
