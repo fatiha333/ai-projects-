@@ -2,3 +2,4 @@ openai
 streamlit
 youtube-transcript-api
 python-dotenv
+pymupdf
