@@ -11,7 +11,7 @@ client=OpenAI(
 def hunt1(service ,location):
   
   url="https://google.serper.dev/search"
-  headers={"X-API-KEY":""}
+  headers={"X-API-KEY": st.secrets["OPENROUTER_API_KEY2"]}
   payload = {
     "q": f"dental clinic USA contact email",
     "num": 10
@@ -71,7 +71,7 @@ Important: Research the client's location from their description and name a real
 
 def pitch_to_voice(pitch):
    client3=ElevenLabs(
-      api_key=""
+      api_key=st.secrets["OPENROUTER_API_KEY3"]
    )
 
    audio=client3.text_to_speech.convert(
