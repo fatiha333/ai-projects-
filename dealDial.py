@@ -6,7 +6,7 @@ from elevenlabs import ElevenLabs
 
 client=OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="")
+    api_key=st.secrets["OPENROUTER_API_KEY"])
 
 def hunt1(service ,location):
   
