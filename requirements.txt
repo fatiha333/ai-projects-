@@ -3,3 +3,5 @@ streamlit
 youtube-transcript-api
 python-dotenv
 pymupdf
+elevenlabs
+requests
