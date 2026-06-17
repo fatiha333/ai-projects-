@@ -5,3 +5,5 @@ python-dotenv
 pymupdf
 elevenlabs
 requests
+Flask==3.0.0
+twilio==8.10.0
