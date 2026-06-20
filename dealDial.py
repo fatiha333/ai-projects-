@@ -3,25 +3,27 @@ import requests
 import io
 from openai import OpenAI
 from elevenlabs import ElevenLabs
+from twilio.rest import Client
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 client=OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key=st.secrets["OPENROUTER_API_KEY"])
+    api_key=os.getenv("OPENROUTER_API_KEY"))
 
 def hunt1(service ,location):
   
   url="https://google.serper.dev/search"
-  headers={"X-API-KEY": st.secrets["OPENROUTER_API_KEY2"]}
+  headers=os.getenv("SER_API_KEY")
   payload = {
     "q": f"dental clinic USA contact email",
     "num": 10
 }
 
-  
   response = requests.post(url, json=payload, headers=headers)
-  
   data=response.json()
-  
+
   clients=[]
   for result in data.get("organic", [])[:5]:
         clients.append({
@@ -71,7 +73,7 @@ Important: Research the client's location from their description and name a real
 
 def pitch_to_voice(pitch):
    client3=ElevenLabs(
-      api_key=st.secrets["OPENROUTER_API_KEY3"]
+      api_key=os.getenv("ELEVENLABS_API_KEY")
    )
 
    audio=client3.text_to_speech.convert(
@@ -88,6 +90,18 @@ def save_and_play(audio):
       audio_bytes.write(chunk)
    audio_bytes.seek(0)  
    st.audio(audio_bytes,format="audio/mp3", autoplay=True)
+
+
+def make_phncall(pitch):
+    account_sid=os.getenv("TWILIO_ACCOUNT_SID")
+    auth_token=os.getenv("TWILIO_AUTH_TOKEN")
+    client4=Client(account_sid,auth_token)
+    call=client4.calls.create(
+        to="+919761712139",
+        from_="+19843517691",
+        url="https://dental-voice-bot-production.up.railway.app/answer"
+    )
+    return (call.sid)
 
 st.title("Deal Dial")
 st.header(" your ai calling assistant")
@@ -106,7 +120,7 @@ if hunt:
 if "clients" in st.session_state:
   st.subheader("potential clients found")
   for i,client1 in enumerate(st.session_state["clients"]):
-      with st.expander(f"{i+1}:{client1["name"]}"):
+      with st.expander(f"{i+1}:{client1['name']}"):
          st.write(f"🌐 Website: {client1['website']}")
          st.write(f"📝 {client1['description']}")
          
@@ -114,11 +128,12 @@ if "clients" in st.session_state:
             "let ai call  ",
             key=f"aicall_{i}"
             )                    
-      if call_clients:
+         if call_clients:
              u=hunt1(service,location)
              y=generate_pitch(service,st.session_state["clients"][i]["name"],st.session_state["clients"][i]["description"])
              st.write(y)
              a=pitch_to_voice(y)
              save_and_play(a)
+             make_phncall(y)
 
 
