@@ -8,5 +8,6 @@ requests
 sentence-transformers
 faiss-cpu
 numpy
+nltk
 Flask==3.0.0
 twilio==8.10.0
